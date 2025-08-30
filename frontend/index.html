@@ -95,7 +95,7 @@
         const targetLanguage = document.getElementById("language").value;
 
         try {
-          const response = await fetch("https://codemorph-evv3.onrender.com", {
+          const response = await fetch("https://codemorph-evv3.onrender.com/convert", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ code, targetLanguage }),
