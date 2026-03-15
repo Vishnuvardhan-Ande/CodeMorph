@@ -25,8 +25,6 @@ CodeMorph/
 │   ├── .env          
 │── frontend/         
 │   ├── index.html
-│   ├── styles.css
-│   ├── script.js
 │── LICENSE           
 │── README.md         # Project documentation
 ```
