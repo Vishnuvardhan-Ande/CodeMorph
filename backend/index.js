@@ -15,8 +15,6 @@ app.use(bodyParser.json());
 const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 app.post("/convert", async (req, res) => {
-  const loader = document.getElementById("container");
-  loader.classList.remove("hidden");
   try {
     const { code, targetLanguage } = req.body;
 
@@ -49,7 +47,6 @@ Do not include comments, explanations, or code fences (like \`\`\`).
     res.status(500).json({ error: "Server error", details: error.message });
   }
   finally {
-    loader.classList.add("hidden");
   }
 });
 
