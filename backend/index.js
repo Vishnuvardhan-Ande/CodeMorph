@@ -38,6 +38,33 @@ ${code}`
       ],
     });
 
+    app.post("/optimize", async (req,res)=>{
+    const { code } = req.body;
+    try{
+        const prompt = `
+Optimize the following code.
+Requirements:
+1. Improve time complexity if possible.
+2. Improve space complexity if possible.
+3. Keep same functionality.
+4. Return only code.
+
+Code:
+${code}
+`;
+        const result = await model.generateContent(prompt);
+        const optimizedCode = result.response.text();
+        res.json({
+            optimizedCode
+        });
+    }
+    catch(err){
+        res.status(500).json({
+            error:"Optimization failed"
+        });
+    }
+});
+
     let convertedCode =
       response.choices[0]?.message?.content || "⚠️ No output generated.";
 
