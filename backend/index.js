@@ -58,11 +58,9 @@ app.post("/convert", async (req, res) => {
               role: "user",
               content: `
                 Optimize the following code.
-                Requirements:
-                - Improve performance if possible
-                - Improve readability
-                - Preserve functionality
-                - Return ONLY code
+                Return ONLY the fully runnable program.
+                Do not include comments, explanations, or code fences.
+                After code provide before code time and space complexity and after time and space complexity
                 ${code}
                 `
             }
