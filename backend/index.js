@@ -29,41 +29,64 @@ app.post("/convert", async (req, res) => {
         {
           role: "user",
           content: `Convert the following code to ${targetLanguage}.
-Return ONLY the fully runnable program.
-Do not include comments, explanations, or code fences.
-
-Code:
-${code}`
+          Return ONLY the fully runnable program.
+          Do not include comments, explanations, or code fences.
+          Code:
+          ${code}`
         },
       ],
     });
 
-    app.post("/optimize", async (req,res)=>{
-    const { code } = req.body;
-    try{
-        const prompt = `
-Optimize the following code.
-Requirements:
-1. Improve time complexity if possible.
-2. Improve space complexity if possible.
-3. Keep same functionality.
-4. Return only code.
+    app.post("/optimize", async (req, res) => {
+      try {
+        const { code } = req.body;
+        if (!code) {
+          return res.status(400).json({
+            error: "Code is required"
+          });
+        }
 
-Code:
-${code}
-`;
-        const result = await model.generateContent(prompt);
-        const optimizedCode = result.response.text();
+        const response = await client.chat.completions.create({
+          model: "llama-3.1-8b-instant",
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are an expert code optimizer. Return only optimized code."
+            },
+            {
+              role: "user",
+              content: `
+                Optimize the following code.
+                Requirements:
+                - Improve performance if possible
+                - Improve readability
+                - Preserve functionality
+                - Return ONLY code
+                ${code}
+                `
+            }
+          ]
+        });
+        let optimizedCode =
+          response.choices[0]?.message?.content ||
+          "No optimized output generated.";
+        optimizedCode = optimizedCode
+          .replace(/```[a-zA-Z]*\n?/g, "")
+          .replace(/```/g, "")
+          .trim();
         res.json({
-            optimizedCode
+          optimizedCode
         });
-    }
-    catch(err){
+      }
+      catch (error) {
+        console.error("OPTIMIZE ERROR:", error);
         res.status(500).json({
-            error:"Optimization failed"
+          error: error.message
         });
-    }
-});
+      }
+    });
+        
 
     let convertedCode =
       response.choices[0]?.message?.content || "⚠️ No output generated.";
